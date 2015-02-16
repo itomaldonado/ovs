@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, abort, make_response
+from flask import Flask, jsonify, request, abort, make_response, render_template
 import uuid
 
 # Flask light-weight web server.
@@ -20,7 +20,7 @@ bad_states = []
 # For load-balancing checks
 @server.route('/', methods=['GET'])
 def get_root():
-    return "OK"
+    return render_template('oep.html', entries=products)
 
 
 
@@ -34,13 +34,25 @@ def get_order(order_id):
         abort(404)
 
 
+# Get all orders by calling /ovs/orders/
+@server.route('/ovs/orders', methods=['GET'])
+def get_all_order():
+    # return everything in out 'orders' database
+    return jsonify({'orders': orders.values()})
 
 # Order Validation Service
 @server.route('/ovs/orders', methods=['POST'])
 def post_order():
 
     # Get the Json order from the request
-    new_order = request.json
+    if (request.headers['Content-Type'] == 'application/json'):
+        new_order = request.json
+    elif (request.headers['Content-Type'] == 'application/x-www-form-urlencoded'):
+        new_order = dict()
+        new_order['name'] = request.form['name']
+        new_order['address'] = request.form['address']
+        new_order['productType'] = request.form['productType']
+
     # validate order
     valid,error_msg = order_field_validation(new_order)
     # If not valid, return status 400 with a json body containing the error message.
