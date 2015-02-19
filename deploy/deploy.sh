@@ -21,7 +21,7 @@ fi
 export DOCKER_HOST=$DEPLOY_DOCKER_HOST
 
 # Get the currently running app instance.
-APP_INSTANCE=`docker ps | grep -o $REPO_NAME`
+APP_INSTANCE=`docker ps | grep -wo " ovs" | cut -d" " -f 2`
 
 # If one instance found, bounce it.
 if [ ! -z "$APP_INSTANCE" -a "$APP_INSTANCE" != "" -a "$APP_INSTANCE" != " " ]; then
@@ -33,10 +33,10 @@ if [ ! -z "$APP_INSTANCE" -a "$APP_INSTANCE" != "" -a "$APP_INSTANCE" != " " ]; 
 
     # Stopping and starting our app.
     echo "Stopping and Removing instance with name: $APP_INSTANCE"
-    docker stop $APP_INSTANCE; docker rm $APP_INSTANCE;
+    docker stop $REPO_NAME; docker rm $REPO_NAME;
 
     echo "Starting new instance of image: $DOCKER_IMAGE_NAME with name: $APP_INSTANCE"
-    docker run -d --name $APP_INSTANCE -p $APP_PORT:80 $DOCKER_IMAGE_NAME
+    docker run -d --name $REPO_NAME -p $APP_PORT:80 $DOCKER_IMAGE_NAME
 else
     echo "Instance with name: $REPO_NAME not found."
 
