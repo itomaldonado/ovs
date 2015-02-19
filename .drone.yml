@@ -13,8 +13,8 @@ publish:
         username: $$username
         password: $$password
         email: $$email
-        tag: latest
         branch: master
+        push_latest: true
         keep_builds: false
 deploy:
     bash:

@@ -11,7 +11,7 @@ ADD app.py /home/python/
 ADD templates/ /home/python/
 
 # Installing all requirements
-RUN pip install -r requirements.txt
+RUN pip install -r /home/python/requirements.txt
 
 # Exposing port 80
 EXPOSE 80
