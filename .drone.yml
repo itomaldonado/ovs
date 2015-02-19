@@ -1,4 +1,4 @@
-image: bradrydzewski/python:2.7
+image: itomaldonado/python:2.7.9
 env:
     - aws_access_key_id=$$aws_access_key
     - aws_secret_access_key=$$aws_secret_key
