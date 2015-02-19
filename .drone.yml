@@ -1,8 +1,6 @@
 image: itomaldonado/python:2.7.9
-env:
-    - aws_access_key_id=$$aws_access_key
-    - aws_secret_access_key=$$aws_secret_key
 script:
+    - env
     - pip install -r requirements.txt --use-mirrors
     - python -m py_compile app.py
     - python -m unittest discover ./test/
