@@ -1,18 +1,19 @@
 #!/bin/bash
 
 # Variables that I will move to Params~
+USER_NAME=`echo $DRONE_BUILD_DIR| cut -d'/' -f 7`
 REPO_NAME=`echo $DRONE_BUILD_DIR| cut -d'/' -f 8`
 BASE_PORT=5000
 APP_PORT=$BASE_PORT
 
 # Docker-specific config
-DOCKER_IMAGE_NAME="vzdevopstraining/"$REPO_NAME
-DEPLOY_DOCKER_HOST="tcp://ip-172-31-23-232.us-west-1.compute.internal:2375"
+DOCKER_IMAGE_NAME="$USER_NAME/$REPO_NAME"
+DEPLOY_DOCKER_HOST="tcp://ip-172-31-31-76.us-west-1.compute.internal:2375"
 CURRENT_DOCKER_HOST=`echo $DOCKER_HOST`
 
 # Extracting the Port number
 APP_NUMBER=`echo $DRONE_BUILD_DIR| cut -d'/' -f 8 | cut -d's' -f 2`
-if [! -z "$APP_NUMBER" -a "$APP_NUMBER" != "" -a "$APP_NUMBER" != " " ]; then
+if [ ! -z "$APP_NUMBER" -a "$APP_NUMBER" != "" -a "$APP_NUMBER" != " " ]; then
     APP_PORT=`echo $(($BASE_PORT + $APP_NUMBER))`
 fi
 
