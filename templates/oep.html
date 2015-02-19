@@ -8,13 +8,21 @@
         <dd><input type=text size=50 name=name>
         <dt>Address:
         <dd><input type=text size=100 name=address>
-        <dt>Text:
+        <dt>City:
+        <dd><input type=text size=50 name=city>
+        <dt>State:
+        <dd><input type=text size=2 maxlength=2 name=state>
+        <dt>Zipcode:
+        <dd><input type=text size=10 name=zipcode>
+        <dt>Due Date:
+        <dd><input type=date name=dueDate>
+        <dt>Product:
         <dd><select name=productType>
             {% for entry in entries %}
              <option value={{entry}}>{{entry}}</option>
             {% endfor %}
             </select>
-        <dd><input type=submit value=Share>
+        <dd><input type=submit value=Submit>
       </dl>
     </form>
 </div>

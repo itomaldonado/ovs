@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, abort, make_response, render_template
-import uuid
+from datetime import datetime, timedelta
+import uuid, re
 
 # Flask light-weight web server.
 server = Flask(__name__)
@@ -7,12 +8,8 @@ server = Flask(__name__)
 
 # In-memory Databases - Dynamic Dictionaries
 orders = dict()
-products = ['FiOS','SONET', 'VOD']
-bad_countries = []
-bad_states = []
-
-
-
+products = ['FiOS','SONET', 'VOD', 'NEW_PROD']
+bad_states = ['CA','TX','FL']
 
 ##########################
 ##### REST SERVICES ######
@@ -52,11 +49,13 @@ def post_order():
         new_order = dict()
         new_order['name'] = request.form['name']
         new_order['address'] = request.form['address']
-        new_order['productType'] = request.form['productType']
+        new_order['city'] = request.form['city']
+        new_order['state'] = request.form['state']
+        new_order['zipcode'] = request.form['zipcode']
+        new_order['dueDate'] = request.form['dueDate']
 
     # validate order
     valid,error_msg = order_field_validation(new_order)
-    # If not valid, return status 400 with a json body containing the error message.
     if not valid:
         return jsonify({'error': error_msg}), 400
 
@@ -79,12 +78,57 @@ def post_order():
 # Order Validation, returns a tuple, (boolean,string)
 def order_field_validation(order={}):
 
-    if order:
-        # Returns (True,'') if order is not empty.
-        return (True,'')
+    valid,error = validate_empty_order(order=order)
+    if not valid:
+        return valid, error
+
+    valid,error = validate_states(order=order)
+    if not valid:
+        return valid, error
+
+    valid,error = validate_due_date(order=order)
+    if not valid:
+        return valid, error
+
+    valid,error = validate_zipcodes(order=order)
+    if not valid:
+        return valid, error
+
+    return True, ''
+
+# CHeck if the order is not empty.
+def validate_empty_order(order={}):
+    if not order:
+        return False, 'order is empty'
     else:
-        # Return (False,'order is empty') if order is empty
-        return (False,'order is empty')
+        return True, ''
+
+# Check if the state is not part of the bad states
+def validate_states(order={}):
+    if order['state'] in bad_states:
+        return False, 'state not in service'
+    else:
+        return True, ''
+
+# Check if the due date is not too early (or in the past!)
+def validate_due_date(order={}):
+    if (datetime.strptime(order['dueDate'],"%m/%d/%Y") - datetime.now()).days < 5:
+        return False, 'due date is too early'
+    else:
+        return True, ''
+
+# Check if the zipcode is valid
+def validate_zipcodes(order={}):
+    if re.match(r'(^[0-9]{5}-?[0-9]{4})$', order['zipcode']):
+        return False, 'no support for zip+4'
+    elif not re.match(r'^[0-9]+$', order['zipcode']):
+        return False,'US zipcodes only contain digits'
+    elif (not re.match('^[0-9]{5}$',order['zipcode']))\
+            or (int(order['zipcode']) < 601)\
+            or (int(order['zipcode']) > 99950):
+        return False,'invalid zipcode'
+    else:
+        return True, ''
 
 
 
