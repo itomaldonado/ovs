@@ -15,6 +15,7 @@ publish:
         email: $$email
         branch: master
         push_latest: true
+        tag: latest
         keep_builds: false
 deploy:
     bash:
