@@ -9,7 +9,6 @@ publish:
     docker:
         image_name: $$username/$REPO_NAME
         docker_host: $$docker_host
-        docker_version: 1.5.0
         username: $$username
         password: $$password
         email: $$email
