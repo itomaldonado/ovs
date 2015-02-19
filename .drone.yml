@@ -9,6 +9,7 @@ publish:
     docker:
         image_name: $$username/$REPO_NAME
         docker_host: $$docker_host
+        registry_login: true
         username: $$username
         password: $$password
         email: $$email
