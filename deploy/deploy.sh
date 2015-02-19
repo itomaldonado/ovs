@@ -38,12 +38,12 @@ if [ ! -z "$APP_INSTANCE" -a "$APP_INSTANCE" != "" -a "$APP_INSTANCE" != " " ]; 
     echo "Starting new instance of image: $DOCKER_IMAGE_NAME with name: $APP_INSTANCE"
     docker run -d --name $APP_INSTANCE -p $APP_PORT:80 $DOCKER_IMAGE_NAME
 else
-    echo "Instance with name: $APP_INSTANCE not found."
+    echo "Instance with name: $REPO_NAME not found."
 
     # Pull New Docker Version ...
     echo "Pulling new version of image: $DOCKER_IMAGE_NAME"
     docker pull $DOCKER_IMAGE_NAME
 
-    echo "Starting new instance of image: $DOCKER_IMAGE_NAME with name: $APP_INSTANCE"
-    docker run -d --name $APP_INSTANCE -p $APP_PORT:80 $DOCKER_IMAGE_NAME
+    echo "Starting new instance of image: $DOCKER_IMAGE_NAME with name: $REPO_NAME"
+    docker run -d --name $REPO_NAME -p $APP_PORT:80 $DOCKER_IMAGE_NAME
 fi
